@@ -2,17 +2,15 @@
 
 
 ## 1.Create a new server.crt file
-
+```shell
 BeijingCSC-1# mkdir /ifs/local
 BeijingCSC-1# cd /ifs/local
-
-
 BeijingCSC-1# cp /usr/local/apache2/conf/ssl.key/server.key .
 BeijingCSC-1# ls
 server.key
-
+```
 Generate a new crt file;
-
+```shell
 BeijingCSC-1# openssl req -new -days 730 -nodes -x509 -key server.key -out server.crt
 You are about to be asked to enter information that will be incorporated
 into your certificate request.
@@ -33,22 +31,24 @@ server.crt	server.key
 
 BeijingCSC-1# pwd
 /ifs/local
-
+```
 
 ## 2. Backup and Replace the default crt and key file.
 
 Backup default key and crt first:
-isi_for_array -s 'cp /usr/local/apache2/conf/ssl.key/server.key /ifs/local/server.key.bak'
-isi_for_array -s 'cp /usr/local/apache2/conf/ssl.crt/server.crt /ifs/local/server.crt.bak' 
-
+```shell
+BeijingCSC-1# isi_for_array -s 'cp /usr/local/apache2/conf/ssl.key/server.key /ifs/local/server.key.bak'
+BeijingCSC-1# isi_for_array -s 'cp /usr/local/apache2/conf/ssl.crt/server.crt /ifs/local/server.crt.bak' 
+```
 
 Replace key and crt:
-isi services -a isi_webui disable 
-chmod 640 server.key 
-isi_for_array -s 'cp /ifs/local/server.key  /usr/local/apache2/conf/ssl.key/server.key' 
-isi_for_array -s 'cp /ifs/local/server.crt /usr/local/apache2/conf/ssl.crt/server.crt' 
-isi services -a isi_webui enable 
-
+```shell
+BeijingCSC-1# isi services -a isi_webui disable 
+BeijingCSC-1# chmod 640 server.key 
+BeijingCSC-1# isi_for_array -s 'cp /ifs/local/server.key  /usr/local/apache2/conf/ssl.key/server.key' 
+BeijingCSC-1# isi_for_array -s 'cp /ifs/local/server.crt /usr/local/apache2/conf/ssl.crt/server.crt' 
+BeijingCSC-1# isi services -a isi_webui enable 
+```
 Now, you can access the Isilon Web GUI to confirm the certification has been updated.
 
 
@@ -58,23 +58,25 @@ Isilon: /usr/local/apache2/conf/ssl.crt/server.crt
 local laptop directory: C:\Users\gaoz2\Downloads\
 
 ## 4. Import server.crt into JRE cacerts.
-
-"C:\Program Files\Java\jre1.8.0_121\bin\keytool.exe" -import -v -trustcacerts -alias api.isilon.com -file "C:\Users\gaoz2\Downloads\server.crt" -keystore "C:\Program Files\Java\jre1.8.0_151\lib\security\cacerts" -keypass changeit -storepass changeit
-
+```shell
+Windows> "C:\Program Files\Java\jre1.8.0_121\bin\keytool.exe" -import -v -trustcacerts -alias api.isilon.com -file "C:\Users\gaoz2\Downloads\server.crt" -keystore "C:\Program Files\Java\jre1.8.0_151\lib\security\cacerts" -keypass changeit -storepass changeit
+```
 ## 5.Check the crt has been imported.
-
-"C:\Program Files\Java\jre1.8.0_121\bin\keytool.exe" -list -v -keystore "C:\Program Files\Java\jre1.8.0_151\lib\security\cacerts" | findstr api
+```shell
+Windows> "C:\Program Files\Java\jre1.8.0_121\bin\keytool.exe" -list -v -keystore "C:\Program Files\Java\jre1.8.0_151\lib\security\cacerts" | findstr api
 输入密钥库口令:  changeit
 别名: api.isilon.com
 所有者: EMAILADDRESS=support@isilon.com, CN=api.isilon.com, OU=Isilon, O=EMC, L=Beijing, ST=Beijing, C=CN
 发布者: EMAILADDRESS=support@isilon.com, CN=api.isilon.com, OU=Isilon, O=EMC, L=Beijing, ST=Beijing, C=CN
-
+```
 
 ## 6. Add DNS resolv record to C:\Windows\System32\drivers\etc\hosts
+```shell
 10.32.32.132        api.isilon.com
-
+```
+```shell
 ping api.isilon.com
-
+```
 
 ## 7. Coding and Test.
 	String HOST = "api.isilon.com";
